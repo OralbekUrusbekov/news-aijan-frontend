@@ -20,6 +20,15 @@ export interface Author {
   avatar_url: string;
 }
 
+export interface Tag {
+  id: number;
+  slug: string;
+  name: string;
+  name_kk: string;
+  name_ru: string;
+  name_en: string;
+}
+
 export interface NewsItem {
   id: number;
   slug: string;
@@ -41,6 +50,7 @@ export interface NewsItem {
   is_published: boolean;
   published_at: string;
   created_at: string;
+  source_name: string | null;
 }
 
 export interface CommentUser {
@@ -72,11 +82,11 @@ export interface NewsDetail extends NewsItem {
   meta_description: string | null;
   meta_keywords: string | null;
   source_url: string | null;
-  source_name: string | null;
   is_liked: boolean;
   is_bookmarked: boolean;
   comments: CommentItem[];
   related_news: NewsItem[];
+  tags: Tag[];
 }
 
 export interface HomeData {

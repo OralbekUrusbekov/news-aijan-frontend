@@ -6,10 +6,7 @@ import { api, ApiError } from '@/lib/api';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useLocale } from '@/lib/i18n/LocaleContext';
 import { CommentItem } from '@/lib/types';
-
-function formatDate(value: string, locale: string) {
-  return new Date(value).toLocaleString(locale === 'kk' ? 'kk-KZ' : locale === 'ru' ? 'ru-RU' : 'en-US');
-}
+import { formatDateTime as formatDate } from '@/lib/i18n/date';
 
 function CommentRow({ comment, onReply, onLike, onDelete, currentUserId, isAdmin, depth = 0 }: {
   comment: CommentItem;
@@ -36,37 +33,37 @@ function CommentRow({ comment, onReply, onLike, onDelete, currentUserId, isAdmin
   const canDelete = currentUserId === comment.user.id || isAdmin;
 
   return (
-    <div className={depth > 0 ? 'ml-8 mt-3' : 'border-b border-gray-100 py-4'}>
+    <div className={depth > 0 ? 'ml-8 mt-4' : 'border-b border-slate-100 py-5'}>
       <div className="flex gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={comment.user.avatar_url} alt={comment.user.name} className="w-9 h-9 rounded-full shrink-0" />
+        <img src={comment.user.avatar_url} alt={comment.user.name} className="w-10 h-10 rounded-full shrink-0 ring-2 ring-slate-50" />
         <div className="flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm">{comment.user.name}</span>
-            <span className="text-xs text-gray-400">{formatDate(comment.created_at, locale)}</span>
+            <span className="font-semibold text-sm text-slate-900">{comment.user.name}</span>
+            <span className="text-xs text-slate-400">{formatDate(comment.created_at, locale)}</span>
           </div>
-          <p className="text-sm text-gray-700 mt-1 whitespace-pre-wrap">{comment.content}</p>
-          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-            <button onClick={() => onLike(comment.id)} className={comment.is_liked ? 'text-blue-600 font-medium' : ''}>
+          <p className="text-sm text-slate-600 mt-1.5 whitespace-pre-wrap leading-relaxed">{comment.content}</p>
+          <div className="flex items-center gap-4 mt-2.5 text-xs font-medium text-slate-500">
+            <button onClick={() => onLike(comment.id)} className={`hover:text-blue-600 transition ${comment.is_liked ? 'text-blue-600' : ''}`}>
               👍 {comment.likes}
             </button>
             {user && depth === 0 && (
-              <button onClick={() => setReplying((v) => !v)}>{t('comments_reply')}</button>
+              <button onClick={() => setReplying((v) => !v)} className="hover:text-blue-600 transition">{t('comments_reply')}</button>
             )}
             {canDelete && (
-              <button onClick={() => onDelete(comment.id)} className="text-red-500">{t('comments_delete')}</button>
+              <button onClick={() => onDelete(comment.id)} className="text-red-500 hover:text-red-700 transition">{t('comments_delete')}</button>
             )}
           </div>
 
           {replying && (
-            <form onSubmit={submitReply} className="mt-2 flex gap-2">
+            <form onSubmit={submitReply} className="mt-3 flex gap-2">
               <input
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={t('comments_placeholder')}
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+                className="flex-1 border border-slate-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
               />
-              <button className="bg-blue-600 text-white px-3 rounded-lg text-sm">{t('comments_submit')}</button>
+              <button className="bg-blue-600 text-white px-4 rounded-full text-sm font-semibold hover:bg-blue-700 transition">{t('comments_submit')}</button>
             </form>
           )}
 
@@ -142,7 +139,10 @@ export default function CommentSection({ newsSlug, initialComments }: { newsSlug
 
   return (
     <section className="mt-10">
-      <h2 className="text-xl font-bold mb-4">{t('comments_title')} ({comments.length})</h2>
+      <h2 className="font-display text-xl font-extrabold mb-5 text-slate-900 flex items-center gap-2.5">
+        <span className="w-1.5 h-6 rounded-full bg-blue-600" />
+        {t('comments_title')} <span className="text-slate-400 font-medium text-base">({comments.length})</span>
+      </h2>
 
       {user ? (
         <form onSubmit={submitComment} className="flex gap-2 mb-6">
@@ -150,21 +150,21 @@ export default function CommentSection({ newsSlug, initialComments }: { newsSlug
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder={t('comments_placeholder')}
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
+            className="flex-1 border border-slate-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
           />
-          <button disabled={submitting} className="bg-blue-600 text-white px-4 rounded-lg text-sm disabled:opacity-50">
+          <button disabled={submitting} className="bg-blue-600 text-white px-5 rounded-full text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-50">
             {t('comments_submit')}
           </button>
         </form>
       ) : (
-        <p className="text-sm text-gray-500 mb-6">
-          <Link href="/login" className="text-blue-600 hover:underline">{t('comments_login_required')}</Link>
+        <p className="text-sm text-slate-500 mb-6 bg-slate-50 rounded-xl px-4 py-3">
+          <Link href="/login" className="text-blue-600 font-semibold hover:underline">{t('comments_login_required')}</Link>
         </p>
       )}
       {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
 
       {comments.length === 0 ? (
-        <p className="text-sm text-gray-400">{t('comments_empty')}</p>
+        <p className="text-sm text-slate-400">{t('comments_empty')}</p>
       ) : (
         <div>
           {comments.map((c) => (

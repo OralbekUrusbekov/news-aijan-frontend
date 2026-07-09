@@ -31,37 +31,42 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 py-16">
-      <div className="bg-white border border-gray-200 rounded-xl p-8">
-        <h1 className="text-2xl font-bold mb-1">{t('auth_login_title')}</h1>
-        <p className="text-gray-500 text-sm mb-6">{t('auth_login_subtitle')}</p>
-
-        {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">{t('auth_email')}</label>
-            <input
-              type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
+    <div className="min-h-[80vh] flex items-center justify-center bg-slate-50 px-4 py-16">
+      <div className="max-w-md w-full">
+        <div className="bg-white border border-slate-100 shadow-xl shadow-slate-200/50 rounded-3xl p-8 sm:p-10">
+          <div className="text-center mb-8">
+            <span className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 items-center justify-center text-white font-display font-extrabold text-2xl mb-4">А</span>
+            <h1 className="font-display text-2xl font-extrabold text-slate-900">{t('auth_login_title')}</h1>
+            <p className="text-slate-400 text-sm mt-1">{t('auth_login_subtitle')}</p>
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">{t('auth_password')}</label>
-            <input
-              type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
-          </div>
-          <button disabled={loading} className="w-full bg-blue-600 text-white rounded-lg py-2.5 text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-            {t('auth_login_button')}
-          </button>
-        </form>
 
-        <p className="text-sm text-gray-500 mt-6 text-center">
-          {t('auth_no_account')}{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">{t('auth_register_link')}</Link>
-        </p>
+          {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2 mb-4">{error}</p>}
+
+          <form onSubmit={onSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('auth_email')}</label>
+              <input
+                type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1.5">{t('auth_password')}</label>
+              <input
+                type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition"
+              />
+            </div>
+            <button disabled={loading} className="w-full bg-blue-600 text-white rounded-xl py-3 text-sm font-bold hover:bg-blue-700 transition disabled:opacity-50 shadow-lg shadow-blue-600/20">
+              {t('auth_login_button')}
+            </button>
+          </form>
+
+          <p className="text-sm text-slate-500 mt-6 text-center">
+            {t('auth_no_account')}{' '}
+            <Link href="/register" className="text-blue-600 font-semibold hover:underline">{t('auth_register_link')}</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

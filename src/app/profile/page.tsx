@@ -54,58 +54,64 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading || !user) return <div className="max-w-3xl mx-auto px-4 py-20 text-center text-gray-500">{t('common_loading')}</div>;
+  const inputClass = 'w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition';
+  const labelClass = 'block text-sm font-semibold text-slate-700 mb-1.5';
+
+  if (loading || !user) return <div className="max-w-3xl mx-auto px-4 py-24 text-center text-slate-400">{t('common_loading')}</div>;
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
-      <div className="flex items-center gap-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={user.avatar_url} alt={user.name} className="w-16 h-16 rounded-full" />
-        <div>
-          <h1 className="text-2xl font-bold">{t('profile_title')}</h1>
-          <p className="text-sm text-gray-500">{user.email}</p>
+    <div className="bg-slate-50 min-h-[80vh]">
+      <div className="max-w-3xl mx-auto px-4 py-12 space-y-6">
+        <div className="flex items-center gap-5 bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={user.avatar_url} alt={user.name} className="w-20 h-20 rounded-full ring-4 ring-blue-50" />
+          <div>
+            <h1 className="font-display text-2xl font-extrabold text-slate-900">{t('profile_title')}</h1>
+            <p className="text-sm text-slate-400 mt-0.5">{user.email}</p>
+            <span className="inline-block mt-2 text-xs font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">{user.role}</span>
+          </div>
         </div>
+
+        <form onSubmit={saveProfile} className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+          <h2 className="font-display font-extrabold text-slate-900 text-lg">{t('profile_personal_info')}</h2>
+          {message && <p className="text-sm text-blue-700 bg-blue-50 rounded-lg px-3 py-2">{message}</p>}
+          <div>
+            <label className={labelClass}>{t('profile_full_name')}</label>
+            <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>{t('auth_phone')}</label>
+            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>{t('profile_bio')}</label>
+            <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} className={inputClass} />
+          </div>
+          <button disabled={saving} className="bg-blue-600 text-white rounded-xl px-6 py-2.5 text-sm font-bold hover:bg-blue-700 transition disabled:opacity-50 shadow-lg shadow-blue-600/20">
+            {t('profile_save_changes')}
+          </button>
+        </form>
+
+        <form onSubmit={savePassword} className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm">
+          <h2 className="font-display font-extrabold text-slate-900 text-lg">{t('profile_change_password')}</h2>
+          {passwordMessage && <p className="text-sm text-blue-700 bg-blue-50 rounded-lg px-3 py-2">{passwordMessage}</p>}
+          <div>
+            <label className={labelClass}>{t('profile_current_password')}</label>
+            <input type="password" required value={passwordForm.current_password} onChange={(e) => setPasswordForm({ ...passwordForm, current_password: e.target.value })} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>{t('profile_new_password')}</label>
+            <input type="password" required value={passwordForm.password} onChange={(e) => setPasswordForm({ ...passwordForm, password: e.target.value })} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>{t('auth_confirm_password')}</label>
+            <input type="password" required value={passwordForm.password_confirmation} onChange={(e) => setPasswordForm({ ...passwordForm, password_confirmation: e.target.value })} className={inputClass} />
+          </div>
+          <button disabled={savingPassword} className="bg-blue-600 text-white rounded-xl px-6 py-2.5 text-sm font-bold hover:bg-blue-700 transition disabled:opacity-50 shadow-lg shadow-blue-600/20">
+            {t('profile_update_password')}
+          </button>
+        </form>
       </div>
-
-      <form onSubmit={saveProfile} className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold">{t('profile_personal_info')}</h2>
-        {message && <p className="text-sm text-blue-600">{message}</p>}
-        <div>
-          <label className="block text-sm font-medium mb-1">{t('profile_full_name')}</label>
-          <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">{t('auth_phone')}</label>
-          <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">{t('profile_bio')}</label>
-          <textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} rows={3} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        </div>
-        <button disabled={saving} className="bg-blue-600 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-          {t('profile_save_changes')}
-        </button>
-      </form>
-
-      <form onSubmit={savePassword} className="bg-white border border-gray-200 rounded-xl p-6 space-y-4">
-        <h2 className="font-semibold">{t('profile_change_password')}</h2>
-        {passwordMessage && <p className="text-sm text-blue-600">{passwordMessage}</p>}
-        <div>
-          <label className="block text-sm font-medium mb-1">{t('profile_current_password')}</label>
-          <input type="password" required value={passwordForm.current_password} onChange={(e) => setPasswordForm({ ...passwordForm, current_password: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">{t('profile_new_password')}</label>
-          <input type="password" required value={passwordForm.password} onChange={(e) => setPasswordForm({ ...passwordForm, password: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">{t('auth_confirm_password')}</label>
-          <input type="password" required value={passwordForm.password_confirmation} onChange={(e) => setPasswordForm({ ...passwordForm, password_confirmation: e.target.value })} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        </div>
-        <button disabled={savingPassword} className="bg-blue-600 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-blue-700 disabled:opacity-50">
-          {t('profile_update_password')}
-        </button>
-      </form>
     </div>
   );
 }
