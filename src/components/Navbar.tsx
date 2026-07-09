@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useLocale } from '@/lib/i18n/LocaleContext';
 import { LOCALES, LOCALE_LABELS } from '@/lib/i18n/dictionaries';
-import { api } from '@/lib/api';
+import { ADMIN_URL, api } from '@/lib/api';
 import { Category } from '@/lib/types';
 import { formatTopDate } from '@/lib/i18n/date';
 
@@ -61,7 +61,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center gap-4">
                 {user.role === 'admin' && (
-                  <a href="http://127.0.0.1:8001/admin/" target="_blank" rel="noreferrer" className="hover:text-white">
+                  <a href={ADMIN_URL} target="_blank" rel="noreferrer" className="hover:text-white">
                     {t('nav_admin')}
                   </a>
                 )}
@@ -214,7 +214,7 @@ export default function Navbar() {
             {user ? (
               <>
                 {user.role === 'admin' && (
-                  <a href="http://127.0.0.1:8001/admin/" target="_blank" rel="noreferrer" className="text-slate-600">{t('nav_admin')}</a>
+                  <a href={ADMIN_URL} target="_blank" rel="noreferrer" className="text-slate-600">{t('nav_admin')}</a>
                 )}
                 <Link href="/profile" onClick={() => setMenuOpen(false)} className="text-slate-600">{user.name}</Link>
                 <button onClick={() => logout()} className="text-left text-red-600">{t('nav_logout')}</button>

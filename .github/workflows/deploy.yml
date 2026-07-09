@@ -24,9 +24,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build --no-cache \
-            --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL || 'https://api.news-aijan.kz/api' }} \
-            -t ${{ env.IMAGE_NAME }}:latest .
+          docker build --no-cache -t ${{ env.IMAGE_NAME }}:latest .
 
       - name: Push image
         run: |
@@ -39,8 +37,20 @@ jobs:
           docker rm news-aijan-frontend 2>/dev/null || true
           docker run -d --name news-aijan-frontend --restart unless-stopped -p 8081:3000 \
             ${{ env.IMAGE_NAME }}:latest
-          sleep 2
-          docker ps | grep news-aijan-frontend
+
+      - name: Health check
+        run: |
+          for i in $(seq 1 15); do
+            if curl -sf -o /dev/null http://localhost:8081/; then
+              echo "Frontend is up (attempt $i)"
+              exit 0
+            fi
+            echo "Waiting for frontend to become ready... ($i/15)"
+            sleep 3
+          done
+          docker logs news-aijan-frontend --tail 80
+          echo "Frontend did not become ready in time" >&2
+          exit 1
 
   deploy-staging:
     runs-on: self-hosted
@@ -52,9 +62,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build --no-cache \
-            --build-arg NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL_STAGING || 'https://staging-api.news-aijan.kz/api' }} \
-            -t ${{ env.IMAGE_NAME }}:dev .
+          docker build --no-cache -t ${{ env.IMAGE_NAME }}:dev .
 
       - name: Push image
         run: |
@@ -67,5 +75,17 @@ jobs:
           docker rm news-aijan-frontend-dev 2>/dev/null || true
           docker run -d --name news-aijan-frontend-dev --restart unless-stopped -p 8082:3000 \
             ${{ env.IMAGE_NAME }}:dev
-          sleep 2
-          docker ps | grep news-aijan-frontend-dev
+
+      - name: Health check
+        run: |
+          for i in $(seq 1 15); do
+            if curl -sf -o /dev/null http://localhost:8082/; then
+              echo "Frontend is up (attempt $i)"
+              exit 0
+            fi
+            echo "Waiting for frontend to become ready... ($i/15)"
+            sleep 3
+          done
+          docker logs news-aijan-frontend-dev --tail 80
+          echo "Frontend did not become ready in time" >&2
+          exit 1
