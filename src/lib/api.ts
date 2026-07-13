@@ -1,5 +1,5 @@
-const API_URL = 'http://192.168.4.70:8002/api';
-export const ADMIN_URL = 'http://192.168.4.70:8002/admin/';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.4.70:8002/api';
+export const ADMIN_URL = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://192.168.4.70:8002/admin/';
 
 const ACCESS_KEY = 'news_access_token';
 const REFRESH_KEY = 'news_refresh_token';
