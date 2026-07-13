@@ -26,8 +26,6 @@ jobs:
         run: |
           docker build --no-cache \
             --build-arg NEXT_BASE_PATH="/portal" \
-            --build-arg NEXT_PUBLIC_API_URL="https://map.narxoz.kz/news/api" \
-            --build-arg NEXT_PUBLIC_ADMIN_URL="https://map.narxoz.kz/news/admin/" \
             -t ${{ env.IMAGE_NAME }}:latest .
 
       - name: Push image
